@@ -1,15 +1,40 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-
+import React, { useContext, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthProbider';
+import { GoogleAuthProvider,signInWithPopup } from "firebase/auth";
+import { auth } from '../faireBase';
 const Login = () => {
-  
+      const navigate = useNavigate()
+ const { signInUser}=useContext(AuthContext)
+
+ const provider = new GoogleAuthProvider();
     const [sucsses,setSucsses]=useState()
     const [errorMesage,setErrorMesage]=useState()
 const handleSubmit=(e)=>{
     e.preventDefault()
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email,password)
+    console.log(email,password);
+
+    signInUser(email,password)
+    .then(result =>{
+      console.log(result.user);
+      e.target.reset()
+      navigate('/')
+    })
+    .catch(error=>{
+      console.log('Erroe',error)
+    }
+    )
+}
+
+const handleGoogleLogin=()=>{
+  signInWithPopup(auth,provider)
+  .then(result => {
+    console.log(result)
+    navigate('/')
+  })
+  .catch(error=>console.log(error))
 }
 
     return (
@@ -35,6 +60,7 @@ const handleSubmit=(e)=>{
         </fieldset>
       </form>
       <p className=''>new to this website ? please <NavLink to='/signup'>Sign Up</NavLink> </p>
+      <button onClick={handleGoogleLogin} className='btn'>Google</button>
     </div>
   </div>
 </div>

@@ -1,15 +1,30 @@
 
-import { NavLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from './AuthProbider';
 const SignUp = () => {
+
+  const navigate = useNavigate()
     const [sucsses,setSucsses]=useState()
     const [errorMesage,setErrorMesage]=useState()
+
+const {creatUser}=useContext(AuthContext);
+
+
     const handleSignUpSubmit=(e)=>{
        e.preventDefault()
        const email = e.target.email.value;
     const password = e.target.password.value;
     const name = e.target.name.value;
     console.log(email,password,name)
+    creatUser(email,password)
+    .then(result=> {
+      console.log(result.user);
+      useNavigate('/')
+    })
+    .catch(error=>{
+      console.log(error)
+    })
     }
     return (
         <div>
